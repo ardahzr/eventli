@@ -1,0 +1,64 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.2/css/bootstrap.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Asap&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Asap', sans-serif;
+            background-color: #0d0c33; /* Dark background color */
+            color: #ececff; /* Light text color */
+        }
+        .card {
+            background-color: #403cff; /* Dark card background color */
+            color: #ffffff; /* Light text color */
+        }
+        .card-title {
+            color: #ffffff; /* Yellow title color */
+        }
+        .btn-primary {
+            background-color: #201e80; /* Blue button color */
+            border-color: #201e80; /* Blue button border color */
+        }
+        .btn-primary:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+            border-color: #0056b3; /* Darker blue border on hover */
+        }
+    </style>
+    <title>Eventli | {% block page_title %}Details{% endblock page_title %}</title>
+</head>
+<body>
+    {% include "partials/_nav.html" %}
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h1 class="card-title">{{ etkinlik.title }}</h1>
+                        <p class="card-text"><strong>Date:</strong> {{ etkinlik.date }}</p>
+                        <p class="card-text"><strong>Address:</strong> {{ etkinlik.adress }}</p>
+                        <p class="card-text">{{ etkinlik.description }}</p>
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'etkinlik_kayit' etkinlik.slug %}" class="btn btn-primary">Sign Up</a>
+                        {% else %}
+                            <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-primary">Sign Up</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <img src="{% static etkinlik.image %}" alt="{{ etkinlik.title }}" class="card-img-top"><h5 class="card-title"></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
