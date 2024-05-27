@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_recaptcha',
+    'mptt',
     "main"
 ]
 
@@ -124,8 +126,8 @@ STATICFILES_DIRS = [
     BASE_DIR / 'etkinlik_images', 
 ]
 
-CSRF_TRUSTED_ORIGINS = ['https://88a8-95-14-93-205.ngrok-free.app']
-CORS_ALLOWED_ORIGINS = ['https://88a8-95-14-93-205.ngrok-free.app']
+CSRF_TRUSTED_ORIGINS = ['https://ada4-78-179-86-232.ngrok-free.app']
+CORS_ALLOWED_ORIGINS = ['https://ada4-78-179-86-232.ngrok-free.app']
 
 MEDIA_URL = 'etkinlik_images/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'etkinlik_images')
@@ -135,3 +137,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'etkinlik_images')
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+RECAPTCHA_PUBLIC_KEY = '6Ld_wugpAAAAAChFwHofg8ffm35tPWK1vPgH75yz'
+RECAPTCHA_PRIVATE_KEY = '6Ld_wugpAAAAAG_KMJvkn7y3dAHMObhn6N7dlvRr'

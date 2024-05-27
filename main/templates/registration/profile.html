@@ -42,7 +42,7 @@
                 <p class="card-text">First Name: {{ user.first_name }}</p>
                 <p class="card-text">Last Name: {{ user.last_name }}</p>
                 <a href="{% url 'logout' %}" class="btn btn-primary">Logout</a>
-                <div class="container mt-4">
+                
                     <a id="createEventButton" href="{% url 'create_event' %}" class="btn btn-primary btn-lg">Create New Event <i class="bi bi-plus"></i></a>
                     <div id="alertMessage" class="alert alert-warning mt-3" style="display: none;" role="alert">
                         You don't have permission to create events!
@@ -116,30 +116,35 @@
             </div>
             {% if user.is_staff %}
             <div class="container mt-4">
-                <div class="row">
-                    {% for etkinlik in etkinlikler %}
-                        <div class="col-md-4 mb-4">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ etkinlik.title }}</h5>
-                                    <p class="card-text">Date: {{ etkinlik.date }}</p>
-                                    <p class="card-text">Description: {{ etkinlik.description }}</p>
-                                    <p class="card-text">Address: {{ etkinlik.adress }}</p>
-                                    <a href="{% url 'etkinlik_detay' etkinlik.slug %}" class="btn btn-primary">Details</a>
-                                    <form method="post" action="{% url 'delete_event' etkinlik.slug %}" class="me-2">
-                                        {% csrf_token %}
-                                        <button type="submit" class="btn btn-danger">Delete Event</button>
-                                    </form>
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title">Your Events</h2>
+                        <div class="row row-cols-1 row-cols-md-3 g-4">
+                            {% for etkinlik in user.created_events.all %}
+                                <div class="col">
+                                    <div class="card h-100" style="background-color: #201e80;">
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ etkinlik.title }}</h5>
+                                            <p class="card-text">Date: {{ etkinlik.date }}</p>
+                                            <p class="card-text">Address: {{ etkinlik.adress }}</p>
+                                            <p class="card-text">Description: {{ etkinlik.description }}</p>
+                                            <a href="{% url 'etkinlik_detay' etkinlik.slug %}" class="btn btn-primary">Details</a>
+                                            <a href="{% url 'etkinlik_duzenle' etkinlik.slug %}" class="btn btn-primary">Edit</a>
+                                            <form method="post" action="{% url 'delete_event' etkinlik.slug %}" class="d-inline">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-danger">Delete Event</button>
+                                            </form>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            {% endfor %}
                         </div>
-                        {% if forloop.counter|divisibleby:3 %}
-                            </div><div class="row">
-                        {% endif %}
-                    {% endfor %}
+                    </div>
                 </div>
             </div>
+            
             {% endif %}
+            
         </div>
     </div>    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.2/js/bootstrap.min.js"></script>

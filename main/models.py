@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.text import slugify
 from django.contrib.auth.models import User
+from django.utils import timezone
+from mptt.models import MPTTModel, TreeForeignKey
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -11,9 +13,14 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.username
     
-class Category(models.Model):
+
+class Category(MPTTModel):
     name = models.CharField(max_length=40)
-    slug = models.CharField(default="", null=False, unique=True, max_length=50, db_index=True)
+    slug = models.SlugField(default="", null=False, unique=True, max_length=50, db_index=True)
+    parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
+
+    class MPTTMeta:
+        order_insertion_by = ['name']
 
     def __str__(self):
         return f"{self.name}"
@@ -28,6 +35,9 @@ class Etkinlik(models.Model):
     category = models.ForeignKey(Category, default=1, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='etkinlik_images', blank=True, null=True)
     katilimcilar = models.ManyToManyField(User, through='EtkinlikKatilim', related_name='katildigi_etkinlikler')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_events')
+    def __str__(self):
+        return self.title
 
 class EtkinlikKatilim(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -36,3 +46,21 @@ class EtkinlikKatilim(models.Model):
 
     class Meta:
         unique_together = ['user', 'etkinlik']
+
+
+class Rating(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rated_user = models.ForeignKey(User, related_name='rated_user', on_delete=models.CASCADE)
+    rating = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.user.username} -> {self.rated_user.username}: {self.rating}"
+
+class Comment(models.Model):
+    etkinlik = models.ForeignKey(Etkinlik, on_delete=models.CASCADE, related_name='comments')
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    text = models.TextField()
+    created_date = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.text

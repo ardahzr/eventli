@@ -13,6 +13,7 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/etkinlikler">Events</a>
                 </li>
+            
                 <li class="nav-item">
                     <a class="nav-link" href="/about">About</a>
                 </li>
@@ -20,9 +21,34 @@
                     <a class="nav-link" href="/contact">Contact</a>
                 </li>
             </ul>
+            
             <form class="d-flex navbar-nav" action="{% url 'search' %}" method="GET">
                 <input class="form-control me-1" type="text" name="q" placeholder="Search">
                 <button class="btn btn-secondary" type="submit">Search</button>
+                <li class="nav-item dropdown"> 
+                    <a class="nav-link dropdown-toggle" href="#" role="button" id="categoryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        {% if request.GET.category %}
+                            {% for category in categories %}
+                                {% if category.id|stringformat:"s" == request.GET.category %}
+                                    {% if category.level == 1 %}
+                                        {{ category.name }}
+                                    {% else %}
+                                        {{ category.parent.name }}
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            City
+                        {% endif %}
+                    </a>
+                    <ul class="dropdown-menu">
+                        {% for category in categories %}
+                            {% if category.level == 1 %}
+                                <li><a class="dropdown-item" href="?category={{ category.id }}">{{ category.name }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </li>
                 <ul class="navbar-nav ms-2"> 
                     {% if user.is_authenticated %}
                     
@@ -57,3 +83,10 @@
         display: inline-block;
     }
 </style>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+
+
+</head>

@@ -39,30 +39,103 @@
         <div class="row">
             <!-- Display Categories -->
             <div class="col-md-12 mb-4">
-                <h5 class="mb-3">Categories</h5>
-                <div class="row row-cols-auto">
-                    {% for category in categories %}
-                    <div class="col">
-                        <a href="?category={{ category.id }}" class="btn btn-outline-primary mb-3">{{ category.name }}</a>
-                    </div>
-                    {% endfor %}
+                <h6 class="mb-2">Selecet a category</h6>
+                <div class="dropdown" style="position: relative;">
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="categoryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        {% if request.GET.category %}
+                            {% for category in categories %}
+                                {% if category.id|stringformat:"s" == request.GET.category %}
+                                    {{ category.name }}
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            Select a Category
+                        {% endif %}
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="categoryDropdown" style="width: max-content; background-color: #403cff; border-radius: 10px;">
+                        {% for category in categories %}
+                            {% if category.id|stringformat:"s" == request.GET.category %}
+                                <li class="dropdown-item" style="position: relative;">
+                                    <a href="?category={{ category.id }}" style="color: #ffffff; text-decoration: none;">{{ category.name }}</a>
+                                    <ul>
+                                        {% for subcategory in category.get_children %}
+                                            {% if subcategory.id|stringformat:"s" != request.GET.category %}
+                                                <li class="dropdown-item" style="position: relative;">
+                                                    <a href="?category={{ subcategory.id }}" style="color: #ffffff; text-decoration: none;">{{ subcategory.name }}</a>
+                                                    <ul> 
+                                                        {% for subsubcategory in subcategory.get_children %}
+                                                            {% if subsubcategory.id|stringformat:"s" != request.GET.category %} 
+                                                                <li class="dropdown-item" style="position: relative;">
+                                                                    <a href="?category={{ subsubcategory.id }}" style="color: #ffffff; text-decoration: none;">{{ subsubcategory.name }}</a>
+                                                                </li>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </ul>
+                                                </li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
                 </div>
             </div>
+            
+              
+              <style>
+                .dropdown-item ul {
+                  display: none;
+                  position: absolute;
+                  top: 0;
+                  left: 100%;
+                  min-width: 10rem;
+                  background-color: #403cff;
+                  z-index: 1000;
+                  border-radius: 10px; /* Added to round the corners */
+                }
+                .dropdown-item:hover > ul {
+                  display: block;
+                }
+              </style>
             <!-- Display Events -->
             {% for etkinlik in etkinlikler %}
-            <div class="col-md-4 mb-4">
-                <div class="card">
-                    <img src="{{ etkinlik.image.url }}" class="card-img-top" alt="{{ etkinlik.title }}">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ etkinlik.title }}</h5>
-                        <p class="card-text">Date: {{ etkinlik.date }}</p>
-                        <p class="card-text">Description: {{ etkinlik.description }}</p>
-                        <p class="card-text">Address: {{ etkinlik.adress }}</p>
-                        <a href="{% url 'etkinlik_detay' etkinlik.slug %}" class="btn btn-primary">Details</a>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
+<div class="col-md-4 mb-4">
+    <div class="card">
+        <div class="img-container">
+            <img src="{{ etkinlik.image.url }}" class="card-img-top" alt="{{ etkinlik.title }}">
+        </div>
+        <div class="card-body">
+            <h5 class="card-title"><strong>{{ etkinlik.title }}</strong></h5>
+            <p class="card-text"><strong>Date: </strong>{{ etkinlik.date }}</p>
+            <p class="card-text"><strong>Description: </strong>{{ etkinlik.description }}</p>
+            <p class="card-text"><strong>Address: </strong>{{ etkinlik.adress }}</p>
+            <a href="{% url 'etkinlik_detay' etkinlik.slug %}" class="btn btn-primary">Details</a>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<style>
+.img-container {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%; /* 16:9 Aspect Ratio */
+    overflow: hidden;
+    border-top-left-radius: 0.25rem;
+    border-top-right-radius: 0.25rem;
+}
+
+.card-img-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Scale the image to cover the container */
+}
+</style>
+
         </div>
     </div>
     

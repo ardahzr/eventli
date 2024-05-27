@@ -9,41 +9,53 @@
         body {
             font-family: 'Asap', sans-serif;
             background-color: #0d0c33; 
-            color: #ececff; 
+            color: #ececff;
+            padding: 20px;
         }
         .card {
             background-color: #403cff; 
             color: #ffffff; 
+            padding: 20px;
+            border-radius: 10px;
         }
         .card-title {
             color: #ffffff; 
         }
+        .form-control {
+            background-color: #0d0c33; 
+            color: #ececff; 
+            border-color: #201e80; 
+        }
         .btn-primary {
             background-color: #201e80; 
             border-color: #201e80; 
+            margin-top: 10px;
         }
         .btn-primary:hover {
             background-color: #0056b3; 
             border-color: #0056b3; 
         }
     </style>
-    <title>Eventli | {% block page_title %}Events{% endblock page_title %}</title>
+    <title>Edit Event</title>
 </head>
 <body>
-    {% load static %}
-    <!-- Navbar -->
     {% include "partials/_nav.html" %}
-
+    {% if user.is_staff %}
+    {% if etkinlik in user.created_events.all %}
     <div class="container mt-5">
         <div class="card">
-            <div class="card-body">
-                <h2 class="card-title">About Us</h2>
-                <p class="card-text">We are a trio of passionate computer engineering students driven by a thirst for knowledge. Through our innovative application, we empower university students and event enthusiasts to effortlessly discover and engage with a myriad of activities.</p>
-                <p class="card-text"></p>
-            </div>
+            <h2 class="card-title">Edit Event</h2>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary mt-3">Save Changes</button>
+            </form>
         </div>
     </div>
-    
+    {% else %}
+    <h1>NO PERMISSION TO EDIT EVENT</h1>
+    {% endif %}
+    {% endif %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.2/js/bootstrap.min.js"></script>
 </body>
 </html>
